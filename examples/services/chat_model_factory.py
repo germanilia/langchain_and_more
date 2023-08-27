@@ -6,12 +6,12 @@ import os
 
 class ChatModelFactory:
     @staticmethod
-    def get_llm(model_name=ModelType.GPT_3_5_TURBO_16K):
+    def get_llm(model_name=ModelType.GPT_3_5_TURBO_16K,temperature=0):
         if model_name==ModelType.GPT_3_5_TURBO_16K or model_name==ModelType.GPT_4:
-            return ChatOpenAI(temperature=0, model_name=model_name.value)
+            return ChatOpenAI(temperature=temperature, model_name=model_name.value)
         elif model_name==ModelType.ANTHROPIC:
             return ChatAnthropic(
-                                temperature=0,
+                                temperature=temperature,
                                 anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
                                 streaming=True,
                                 verbose=False
@@ -24,6 +24,6 @@ class ChatModelFactory:
                     openai_api_key=os.getenv("AZURE_API_KEY"),
                     model_name=os.getenv("AZURE_MODEL_NAME"),
                     openai_api_version=os.getenv("AZURE_API_VERSION"),
-                    temperature=0,
+                    temperature=temperature,
                     # stop=["Human:", "Chatbot:"],
                 )

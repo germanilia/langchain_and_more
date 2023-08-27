@@ -12,5 +12,5 @@ class ModelType(Enum):
 
 class ChainType(Enum):
     STUFF="stuff"
-    REDUCE="map_reduce"
+    MAP_REDUCE="map_reduce"
     REFINE="refine"

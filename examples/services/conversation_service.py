@@ -15,9 +15,9 @@ class ConversationalBot(DocumentBase):
     
 
     def chat(self, message):
-        self.pretty_print(f"memory: {self.conversation_chain.memory}")
+        DocumentBase.pretty_print(f"memory: {self.conversation_chain.memory}")
         respons = self.conversation_chain.run(message)
-        self.pretty_print(respons)
+        DocumentBase.pretty_print(respons)
         return respons
     
     def test(self):

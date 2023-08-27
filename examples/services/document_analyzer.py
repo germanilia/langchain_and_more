@@ -18,7 +18,7 @@ class DocumentAnalyzer(DocumentBase):
     def summarize(self, chain_type):
         chain = self.get_chain(chain_type.value)
         result = chain.run(self.docs)
-        self.pretty_print(result)
+        DocumentBase.pretty_print(result)
         return result
     
     def get_chain(self, chain_type):
@@ -40,7 +40,7 @@ class DocumentAnalyzer(DocumentBase):
             llm_chain=llm_chain, document_variable_name="text"
         )
         restult = stuff_chain.run(self.docs)
-        self.pretty_print(restult)
+        DocumentBase.pretty_print(restult)
         return restult
 
 
@@ -78,7 +78,7 @@ class DocumentAnalyzer(DocumentBase):
             verbose=True,
         )
         restult = map_reduce_chain.run(self.docs)
-        self.pretty_print(restult)
+        DocumentBase.pretty_print(restult)
         return restult
 
     def refine(self):
@@ -111,7 +111,7 @@ class DocumentAnalyzer(DocumentBase):
             output_key="output_text",
         )                        
         result = chain({"input_documents": self.docs}, return_only_outputs=True)
-        self.pretty_print(result["output_text"])
+        DocumentBase.pretty_print(result["output_text"])
         return result["output_text"]
 
     
