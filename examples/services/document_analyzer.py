@@ -2,20 +2,27 @@ from langchain.chains import MapReduceDocumentsChain,ReduceDocumentsChain
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains.combine_documents.stuff import StuffDocumentsChain
 from langchain.chains.llm import LLMChain
-from chat_model_factory import ChatModelFactory
-from document_loader import DocumentLoader
+from services.document_base import DocumentBase
+
+from services.document_loader import DocumentLoader
 from langchain.prompts import PromptTemplate
 
-class DocumentAnalyzer:
+class DocumentAnalyzer(DocumentBase):
     def __init__(self, path, model_name="gpt-3.5-turbo-16k"):
         self.loader = DocumentLoader(path)
-        self.docs = self.loader.load()
-        self.llm = ChatModelFactory.get_llm(model_name)
-
+        self.docs = self.loader.load_and_split()
+        super().__init__(model_name)
+        
     
     def summarize(self, chain_type):
+        chain = self.get_chain(chain_type)
+        result = chain.run(self.docs)
+        self.pretty_print(result)
+        return result
+    
+    def get_chain(self, chain_type):
         chain = load_summarize_chain(self.llm, chain_type=chain_type)
-        self.pretty_print(chain.run(self.docs))
+        return chain
 
     def stuff_chain(self):
     
@@ -31,8 +38,9 @@ class DocumentAnalyzer:
         stuff_chain = StuffDocumentsChain(
             llm_chain=llm_chain, document_variable_name="text"
         )
-
-        return stuff_chain.run(self.docs)
+        restult = stuff_chain.run(self.docs)
+        self.pretty_print(restult)
+        return restult
 
 
     def map_reduce(self):
@@ -68,7 +76,9 @@ class DocumentAnalyzer:
             return_intermediate_steps=False,
             verbose=True,
         )
-        return map_reduce_chain.run(self.docs)
+        restult = map_reduce_chain.run(self.docs)
+        self.pretty_print(restult)
+        return restult
 
     def refine(self):
         prompt_template = """Write a concise summary of the following:
@@ -100,15 +110,7 @@ class DocumentAnalyzer:
             output_key="output_text",
         )                        
         result = chain({"input_documents": self.docs}, return_only_outputs=True)
-
+        self.pretty_print(result["output_text"])
         return result["output_text"]
 
-
-        def refine(self):
-            # ... your implementation ...
-            pass
     
-    def pretty_print(self,string):
-        print("\n" + "="*100)
-        print(string)
-        print("="*100 + "\n")
