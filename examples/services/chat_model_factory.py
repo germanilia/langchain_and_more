@@ -1,20 +1,22 @@
 from langchain.chat_models import ChatOpenAI
 from langchain.chat_models import ChatAnthropic
 from langchain.chat_models import AzureChatOpenAI
+from services.enums import ModelType
 import os
+
 class ChatModelFactory:
     @staticmethod
-    def get_llm(model_name="gpt-3.5-turbo-16k"):
-        if model_name=="gpt-3.5-turbo-16k" or model_name=="gpt-4":
-            return ChatOpenAI(temperature=0, model_name=model_name)
-        elif model_name=="anthropic":
+    def get_llm(model_name=ModelType.GPT_3_5_TURBO_16K):
+        if model_name==ModelType.GPT_3_5_TURBO_16K or model_name==ModelType.GPT_4:
+            return ChatOpenAI(temperature=0, model_name=model_name.value)
+        elif model_name==ModelType.ANTHROPIC:
             return ChatAnthropic(
                                 temperature=0,
                                 anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
                                 streaming=True,
                                 verbose=False
                                 )
-        elif model_name=="azure":
+        elif model_name==ModelType.AZURE:
             return AzureChatOpenAI(
                     deployment_name=os.getenv("AZURE_DEPLOYMENT_NAME"),
                     engine=os.getenv("AZURE_DEPLOYMENT_NAME"),

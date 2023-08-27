@@ -1,3 +1,4 @@
+from services.enums import ModelType
 from langchain.chains import MapReduceDocumentsChain,ReduceDocumentsChain
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains.combine_documents.stuff import StuffDocumentsChain
@@ -8,14 +9,14 @@ from services.document_loader import DocumentLoader
 from langchain.prompts import PromptTemplate
 
 class DocumentAnalyzer(DocumentBase):
-    def __init__(self, path, model_name="gpt-3.5-turbo-16k"):
+    def __init__(self, path, model_name=ModelType.GPT_3_5_TURBO_16K):
         self.loader = DocumentLoader(path)
         self.docs = self.loader.load_and_split()
         super().__init__(model_name)
         
     
     def summarize(self, chain_type):
-        chain = self.get_chain(chain_type)
+        chain = self.get_chain(chain_type.value)
         result = chain.run(self.docs)
         self.pretty_print(result)
         return result
