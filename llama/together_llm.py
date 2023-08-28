@@ -1,5 +1,6 @@
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-
+import base64
+import uuid
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import DirectoryLoader
@@ -60,8 +61,12 @@ class TogetherLLM(LLM):
                                           max_tokens=self.max_tokens,
                                           temperature=self.temperature,
                                           )
-        text = output['output']['choices'][0]['text']
-        return text
+        output = output['output']['choices'][0]
+        try:
+            return output['text']
+        except KeyError:
+            return output['image_base64']
+
 
 class TogetherModel:
     def __init__(self, model_name: str = "togethercomputer/llama-2-13b-chat"):
@@ -120,4 +125,11 @@ class TogetherModel:
     def ask(self,query):
         llm_response = self.llm(query)
         print(self.wrap_text_preserve_newlines(llm_response))
+    def image(self,query,output_image=None):
+        encoded_image_data = self.llm(query)
+        image_data = base64.b64decode(encoded_image_data)
+        output_image = output_image or str(uuid.uuid4())[:8] + ".jpg"
 
+        with open(output_image, 'wb') as file:
+            file.write(image_data)
+        print(f"Image saved to {output_image}")
