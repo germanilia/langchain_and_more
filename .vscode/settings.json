@@ -1,5 +1,9 @@
 {
     "python.analysis.extraPaths": [
         "./examples/services"
-    ]
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none"
 }
