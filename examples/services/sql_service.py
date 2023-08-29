@@ -16,7 +16,7 @@ TEST_QIERIES = [
 ]
 
 class SqlService():
-    def __init__(self,model_name=ModelType.GPT_4):
+    def __init__(self,model_name:ModelType):
         self.llm = ChatModelFactory.get_llm(model_name,0.4)
         sql_string = os.getenv('DATABASE_URI')
         self.db = SQLDatabase.from_uri(sql_string)
@@ -37,9 +37,17 @@ class SqlService():
 
     def test_chain(self):
         for query in TEST_QIERIES:
-            DocumentBase.pretty_print(self.query_chain(query))
+            try:
+                DocumentBase.pretty_print(f"Testing query: {query}, using chain")
+                DocumentBase.pretty_print(self.query_chain(query))
+            except Exception as e:
+                DocumentBase.pretty_print(f"Failed with query: {query}, using chain")
     
     def test_agent(self):
         for query in TEST_QIERIES:
-            DocumentBase.pretty_print(self.query_agent(query))
+            try:
+                DocumentBase.pretty_print(f"Testing query: {query}, using agent")
+                DocumentBase.pretty_print(self.query_agent(query))
+            except Exception as e:
+                DocumentBase.pretty_print(f"Failed with query: {query}, using chain")
     
