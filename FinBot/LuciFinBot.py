@@ -4,7 +4,7 @@ import streamlit as st
 from PIL import Image
 
 from langchain.chat_models import ChatOpenAI
-from langchain.experimental.plan_and_execute import PlanAndExecute, load_agent_executor, load_chat_planner
+from langchain_experimental.plan_and_execute import PlanAndExecute, load_agent_executor, load_chat_planner
 from langchain.llms import OpenAI
 from langchain import SerpAPIWrapper
 from langchain.agents.tools import Tool
