@@ -2,8 +2,7 @@ import streamlit as st
 from PIL import Image
 
 from langchain.chat_models import ChatOpenAI
-from langchain.agents import PlanAndExecute, load_agent_executor, load_chat_planner
-from langchain_experimental.plan_and_execute import PlanAndExecute, load_agent_executor, load_chat_planner
+from langchain.experimental.plan_and_execute import PlanAndExecute, load_agent_executor, load_chat_planner
 from langchain.llms import OpenAI
 from langchain import SerpAPIWrapper
 from langchain.agents.tools import Tool
@@ -32,11 +31,11 @@ models = ["gpt-4", "gpt-4-0613", "gpt-4-32k",
 model = st.sidebar.selectbox("Select a GPT Model", models, index=0)
 
 # Main window with a text box and an "Enter" button
-st.title('Agent/Tools Demo 🦜🔗')
+st.title('Lucidate Agent/Tools Demo 🦜🔗')
 user_input = st.text_input('Your financial question?')
 enter_button = st.button('Enter')
 
-stock_tool_instance = StockstInfoTool()
+stock_tool_instance = StockInfoTool()
 search = SerpAPIWrapper()
 tools = [
     Tool(

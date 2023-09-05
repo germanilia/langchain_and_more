@@ -89,7 +89,7 @@ class DocumentAnalyzer(DocumentBase):
 
         refine_template = (
     """
-    You are a financial analyst at a bloomberg, you are analyazing "ARM" documents
+    You are a financial analyst at a bloomberg, you are analyazing "TESLA" documents
     You need to decide if you want to invest in this IPO.
     You have a lot of documents to read, and you need to summarize them. here is a summary of the documents you have read so far:
     {existing_answer}

@@ -1,3 +1,9 @@
+from langchain.utils import get_from_dict_or_env
+from langchain.llms.base import LLM
+from pydantic import Extra, root_validator
+from typing import Any, Dict
+import os
+import together
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 import base64
 import uuid
@@ -9,14 +15,8 @@ from langchain.chains import RetrievalQA
 from langchain.vectorstores import Chroma
 from dotenv import load_dotenv
 load_dotenv('llama/.env')
-import together
-import os
-from typing import Any, Dict
 
-from pydantic import Extra, root_validator
 
-from langchain.llms.base import LLM
-from langchain.utils import get_from_dict_or_env
 class TogetherLLM(LLM):
     """Together large language models."""
 
@@ -77,8 +77,7 @@ class TogetherModel:
             max_tokens=4096
         )
 
-
-    def wrap_text_preserve_newlines(self,text, width=110):
+    def wrap_text_preserve_newlines(self, text, width=110):
         # Split the input text into lines based on newline characters
         lines = text.split('\n')
 
@@ -90,8 +89,7 @@ class TogetherModel:
 
         return wrapped_text
 
-
-    def process_llm_response(self,llm_response):
+    def process_llm_response(self, llm_response):
         print(self.wrap_text_preserve_newlines(llm_response['result']))
         print('\n\nSources:')
         for source in llm_response["source_documents"]:
@@ -105,27 +103,29 @@ class TogetherModel:
         texts = text_splitter.split_documents(documents)
         return texts
 
-    def get_retriever(self,sources_folder="static/"):
+    def get_retriever(self, sources_folder="static/"):
         persist_directory = 'db'
-        ## Here is the nmew embeddings being used
-        embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+        # Here is the nmew embeddings being used
+        embedding_function = SentenceTransformerEmbeddings(
+            model_name="all-MiniLM-L6-v2")
         vectordb = Chroma.from_documents(documents=self.load_docs(sources_folder),
-                                        embedding=embedding_function,
-                                        persist_directory=persist_directory)
+                                         embedding=embedding_function,
+                                         persist_directory=persist_directory)
         return vectordb.as_retriever(search_kwargs={"k": 5})
-    
-    def ask_retriever(self,query,retriever):
+
+    def ask_retriever(self, query, retriever):
         qa_chain = RetrievalQA.from_chain_type(llm=self.llm,
-                                       chain_type="stuff",
-                                       retriever=retriever,
-                                       return_source_documents=True)
+                                               chain_type="stuff",
+                                               retriever=retriever,
+                                               return_source_documents=True)
         llm_response = qa_chain(query)
         self.process_llm_response(llm_response)
-    
-    def ask(self,query):
+
+    def ask(self, query):
         llm_response = self.llm(query)
         print(self.wrap_text_preserve_newlines(llm_response))
-    def image(self,query,output_image=None):
+
+    def image(self, query, output_image=None):
         encoded_image_data = self.llm(query)
         image_data = base64.b64decode(encoded_image_data)
         output_image = output_image or str(uuid.uuid4())[:8] + ".jpg"

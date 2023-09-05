@@ -12,7 +12,7 @@ TEST_QIERIES = [
     "How many customers are there?",
     "Which csutomer has the hightest credit line?",
     "Which csutomer made the most expensieve singel oder?",
-    "Which products are included in the most expensieve order?"
+    "Which products are included in the most expensieve order?",
 ]
 
 class SqlService():
