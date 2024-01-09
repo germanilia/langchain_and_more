@@ -1,4 +1,4 @@
-from services.enums import ModelType,ChainType
+from services.enums import ModelType
 from services.document_analyzer import DocumentAnalyzer
 
 analyzer = DocumentAnalyzer("static/tesla/TSLA-Q4-2022-Update.pdf", model_name=ModelType.AZURE)

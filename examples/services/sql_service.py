@@ -1,4 +1,4 @@
-from langchain.utilities import SQLDatabase
+from langchain.sql_database import SQLDatabase
 from langchain_experimental.sql import SQLDatabaseChain
 from services.document_base import DocumentBase
 from services.chat_model_factory import ChatModelFactory
@@ -8,17 +8,12 @@ import os
 from langchain.agents.agent_types import AgentType
 from langchain.agents.agent_toolkits import SQLDatabaseToolkit
 
-TEST_QIERIES = [
-    "How many customers are there?",
-    "Which csutomer has the hightest credit line?",
-    "Which csutomer made the most expensieve singel oder?",
-    "Which products are included in the most expensieve order?",
-]
+
 
 class SqlService():
     def __init__(self,model_name:ModelType):
         self.llm = ChatModelFactory.get_llm(model_name,0.4)
-        sql_string = os.getenv('DATABASE_URI')
+        sql_string = os.getenv('DATABASE_URI',"None")
         self.db = SQLDatabase.from_uri(sql_string)
 
     def query_chain(self, message):
@@ -35,16 +30,16 @@ class SqlService():
         )
         return agent_executor.run(message)
 
-    def test_chain(self):
-        for query in TEST_QIERIES:
+    def test_chain(self, test_queries: list[str]) -> None:
+        for query in test_queries:
             try:
                 DocumentBase.pretty_print(f"Testing query: {query}, using chain")
                 DocumentBase.pretty_print(self.query_chain(query))
             except Exception as e:
                 DocumentBase.pretty_print(f"Failed with query: {query}, using chain")
     
-    def test_agent(self):
-        for query in TEST_QIERIES:
+    def test_agent(self, test_queries: list[str]):
+        for query in test_queries:
             try:
                 DocumentBase.pretty_print(f"Testing query: {query}, using agent")
                 DocumentBase.pretty_print(self.query_agent(query))
