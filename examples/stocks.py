@@ -12,7 +12,7 @@ config_list = [
         "api_type": "azure",
         "api_version": "2023-08-01-preview",
     },
-    {"model": "gpt-4-1106-preview", "api_key": os.getenv("OPENAI_API_KEY")},
+    {"model": "gpt-4", "api_key": os.getenv("OPENAI_API_KEY")},
     {"model": "gpt-3.5-turbo-1106", "api_key": os.getenv("OPENAI_API_KEY")},
 ]
 
